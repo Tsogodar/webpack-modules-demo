@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path =require('path');
 
 const cdn = 'https://cdn.jsdelivr.net/npm/';
 const packageJson = require('./package.json');

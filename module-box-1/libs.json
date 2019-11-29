@@ -1,0 +1,5 @@
+{
+  "echarts": "https://cdn.jsdelivr.net/npm/echarts@4.5.0/dist/echarts.min.js",
+  "fabric": "https://cdn.jsdelivr.net/npm/fabric@3.5.1/dist/fabric.min.js",
+  "lodash": "https://cdn.jsdelivr.net/npm/lodash@4.17.15/dist/lodash.min.js"
+}
