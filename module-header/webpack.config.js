@@ -1,15 +1,17 @@
-const path = require('path');
-const fs = require('fs');
-const packageJson = require('./package.json');
-const EventHooksPlugin = require('event-hooks-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require( 'path' );
+const fs = require( 'fs' );
+const packageJson = require( './package.json' );
+const EventHooksPlugin = require( 'event-hooks-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+
+const stylePrefix = 'header--';
 
 module.exports = {
-	mode: 'production',
-	entry: ['./src/script.js'],
+	mode: 'development',
+	entry: [ './src/script.js' ],
 	output: {
 		filename: 'script.js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve( __dirname, 'dist' )
 	},
 	externals: {
 		lodash: '_',
@@ -21,61 +23,74 @@ module.exports = {
 				test: /\.s[ac]ss$/i,
 				use: [
 					MiniCssExtractPlugin.loader,
+					// 'style-loader',
 					{
 						loader: 'css-loader',
 						options: {
 							modules: {
-								localIdentName: `${packageJson.name}--[local]`
+								localIdentName: `${ packageJson.name }--[local]`
 							}
 						}
 					},
+					// {
+					// 	loader: 'sass-loader',
+					// 	options: {
+					// 		implementation: require( 'sass' )
+					// 	}
+					// },
+					// {
+					// 	loader: 'postcss-loader'
+					// }
+				]
+			},
+			{
+				test: /\.html$/,
+				use: [
+					'file-loader?name=[name].[ext]',
+					'extract-loader',
+					'html-loader',
 					{
-						loader: 'sass-loader',
+						loader: 'posthtml-loader',
 						options: {
-							implementation: require('sass')
+							ident: 'posthtml',
+							plugins: [
+								require( 'posthtml-prefix-class' )({
+									prefix: stylePrefix
+								})
+							]
 						}
+					},
+					{
+						loader: 'postcss-loader',
+						// options:{
+						// 	parser: require('sass')
+						// }
 					}
 				]
 			}
 		]
 	},
 	plugins: [
-		new EventHooksPlugin({
-			beforeRun: () => {
-				const { execFile } = require('child_process');
+		new EventHooksPlugin( {
+			beforeRun: () =>
+			{
+				const { execFile } = require( 'child_process' );
 				const child = execFile(
 					'node',
-					['build-dependencies-list'],
-					(error, stdout, stderr) => {
-						if (error) {
+					[ 'build-dependencies-list' ],
+					( error, stdout, stderr ) =>
+					{
+						if ( error )
+						{
 							throw error;
 						}
 					}
 				);
 			},
-			done: () => {
-				const template = fs.readFileSync(
-					path.join(__dirname, 'src', 'index.html')
-				);
-				const posthtml = require('posthtml');
-				const posthtmlPrefixClass = require('posthtml-prefix-class');
-				posthtml()
-					.use(
-						posthtmlPrefixClass({
-							prefix: `${packageJson.name}--`
-						})
-					)
-					.process(template)
-					.then(output => {
-						fs.writeFileSync(
-							path.join(__dirname, 'dist', 'index.html'),
-							output.html
-						);
-					});
-			}
-		}),
-		new MiniCssExtractPlugin({
+		} ),
+		new MiniCssExtractPlugin( {
 			filename: 'style.css'
-		})
+		} ),
+	 
 	]
 };

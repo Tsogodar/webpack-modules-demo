@@ -1,0 +1,13 @@
+zwracamy to:
+
+ {
+  html:'',
+  css:'',
+  js:{
+    src:'',
+    vendors:['nazwa: wersja']
+  },
+  data:{}
+}
+
+czy same liby?
