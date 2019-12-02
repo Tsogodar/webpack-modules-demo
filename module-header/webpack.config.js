@@ -32,15 +32,12 @@ module.exports = {
 							}
 						}
 					},
-					// {
-					// 	loader: 'sass-loader',
-					// 	options: {
-					// 		implementation: require( 'sass' )
-					// 	}
-					// },
-					// {
-					// 	loader: 'postcss-loader'
-					// }
+					{
+						loader: 'sass-loader',
+						options: {
+							implementation: require( 'sass' )
+						}
+					},
 				]
 			},
 			{
@@ -60,12 +57,6 @@ module.exports = {
 							]
 						}
 					},
-					{
-						loader: 'postcss-loader',
-						// options:{
-						// 	parser: require('sass')
-						// }
-					}
 				]
 			}
 		]
