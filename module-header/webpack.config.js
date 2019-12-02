@@ -1,13 +1,8 @@
 const path = require( 'path' );
-const fs = require( 'fs' );
-const packageJson = require( './package.json' );
 const EventHooksPlugin = require( 'event-hooks-webpack-plugin' );
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-
-const stylePrefix = 'header--';
 
 module.exports = {
-	mode: 'development',
+	mode: 'production',
 	entry: [ './src/script.js' ],
 	output: {
 		filename: 'script.js',
@@ -20,25 +15,8 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.s[ac]ss$/i,
-				use: [
-					MiniCssExtractPlugin.loader,
-					// 'style-loader',
-					{
-						loader: 'css-loader',
-						options: {
-							modules: {
-								localIdentName: `${ packageJson.name }--[local]`
-							}
-						}
-					},
-					{
-						loader: 'sass-loader',
-						options: {
-							implementation: require( 'sass' )
-						}
-					},
-				]
+				test: /\.css$/i,
+				use: [ 'css-loader' ]
 			},
 			{
 				test: /\.html$/,
@@ -50,10 +28,15 @@ module.exports = {
 						loader: 'posthtml-loader',
 						options: {
 							ident: 'posthtml',
+							config: {
+
+							},
 							plugins: [
-								require( 'posthtml-prefix-class' )({
-									prefix: stylePrefix
-								})
+								require( 'posthtml-modules' )(),
+								require( 'posthtml-postcss-modules' )( {
+									from: './src/',
+									generateScopedName: '[hash:base64:5]'
+								} )
 							]
 						}
 					},
@@ -78,10 +61,6 @@ module.exports = {
 					}
 				);
 			},
-		} ),
-		new MiniCssExtractPlugin( {
-			filename: 'style.css'
-		} ),
-	 
+		} )
 	]
 };

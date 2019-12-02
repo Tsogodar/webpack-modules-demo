@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const axios = require('axios');
-const scss = require('./style.scss');
-const html = require('./index.html');
+const scss = require('./style.css');
+const html = require('../index.html');
 
 function xyz() {
 	console.log('header xyz');
